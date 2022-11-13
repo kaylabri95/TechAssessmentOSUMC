@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSUMC Technical Assessment by Kayla Burns</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> 
+
+<!-- Below is the style that will be applied to the div containing the resulting region that the input address is in -->
+<style> 
+#northwest {background-color: #6A6c34;};
+#southwest {background-color: #b16238;};
+#northeast {background-color: #99507F;};
+#southeast {background-color: #429485;};
+#northwestBackground {background-image: url("/media/northwestBackground.png")};
+#southwestBackground {background-image: url("/media/southwestBackground.png")};
+#northeastBackground {background-image: url("/media/northeastBackground.png")};
+#southeastBackground {background-image: url("/media/southeastBackground.png")};
+</style>
+</head>
+<body>
+    <header>
+        <div class="p-4" style="background-color: #b00;"></div>
+    </header>
+
+    <div class="m-4 p-4 d-flex justify-content-center card">
+    <div class="card">
+    <form id="geoParsedForm">
+        <div class="m-2 form-group ">
+            <label for="geoStreet">Address</label>
+            <input type="text" class="form-control" name="geoStreet" id="geoParsedStreet" value="" maxlength="100"></div>
+
+        <div class="m-2 form-group d-flex">
+            <div class="flex-fill w-100">
+                <label for="geoCity">City</label>
+                <input type="text" class="form-control" name="geoCity" id="geoParsedCity" value="" maxlength="40"></div>
+            <div class="flex-fill flex-shrink-1">            
+                <label for="geoState">State</label>
+                <input type="text" class="form-control" name="geoState" id="geoParsedState" value="" maxlength="20"></div>
+        </div>
+        <div class="m-2 form-group">
+            <label for="geoZip">Zip</label>
+            <input type="text" class="form-control" name="geoZip" id="geoParsedZip" value="" maxlength="10"></div>
+
+         <div class="m-2 d-flex ">        
+            <button type="submit" id="submitBtn" class="btn btn-secondary btn-sm">Submit</button></div>
+        
+    </form>
+    </div>
+    </div>
+    <div class="m-4 p-4 d-flex justify-content-center card">
+        <div  id="region">
+            <h2 style="color: #ffffff;"></h2>
+            <p style="color: #ffffff;"></p>
+        </div>
+    </div> 
+</body> 
+</html>
+
+<script>
+// The below is attaching the API function to the submit button
+
+form.addEventListener('submit', getFetch);
+
+// This is the example Im working off of: 
+// ?street=4600+Silver+Hill+Rd&city= Washington&state=DC&zip=20233&benchmark=Public_AR_Census2020&format=json
+
+// The below is the get request for the API to fine the coordinates
+function getFetch(){
+    const choice = street + & + city + & + state + & + zip + & + benchmark + & + format
+    const address = street + city + state
+    const street = document.querySelector("#geoParsedStreet").value
+    const city = document.querySelector("#geoCity").value
+    const state = document.querySelector("#geoState").value
+    const benchmark = Public_AR_Census2020
+    const format = json
+    const regionName = ""
+    
+    const url = `https://geocoding.geo.census.gov/geocoder/locations/address?${choice}`
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+    console.log(data)
+    document.querySelector('h2').innerText = regionName 
+    document.querySelector('p').innerText =  address
+    const xCor = result.input.coordinates.x.value
+    const yCor = result.input.coordinates.y.value
+    determineRegion(xCor, yCor)
+})
+    .catch(err => {
+        console.log(`error ${err}`)
+    });
+};
+
+// The below takes in the coordinates from the json object and sets the id of the div to match the region. The id then is affected by the css in the head of the document based on region. Also ther below gives the regionName to the div for the client to see
+function determineRegion(x,y){
+    const region = document.querySelector(".region");
+    const regionBackground = document.querySelector(".regional")
+  if(lattitude > 44.967243 && longitude < -103.771556){
+    region.setAttribute('id', 'northwest');
+    regionBackground.setAttribute('id', 'northwestBackground');
+    regionName = "Northwest"
+  }else if (lattitude < 44.967243 && longitude > -103.771556){
+    region.setAttribute('id', 'southeast');
+    regionBackground.setAttribute('id', 'southeastBackground');
+    regionName = "Southeast"
+  }else if (lattitude > 44.967243 && longitude > -103.771556){
+    region.setAttribute('id', 'northeast')
+    regionBackground.setAttribute('id', 'northeastBackground');
+    regionName = "Northeast"
+  }else if (lattitude < 44.967243 && longitude < -103.771556){
+    region.setAttribute('id', 'southwest');
+    regionBackground.setAttribute('id', 'southwestBackground');
+    regionName = "Southwest"
+  }else{
+    console.log(`error ${err}`)
+}
+};
+</script>
